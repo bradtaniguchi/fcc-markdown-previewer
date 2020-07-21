@@ -22,6 +22,8 @@
     "@angular/platform-browser": "~10.0.4",
     "@angular/platform-browser-dynamic": "~10.0.4",
     "@angular/router": "~10.0.4",
+    "dompurify": "^2.0.12",
+    "marked": "^1.1.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
@@ -35,6 +37,8 @@
     "@angular-eslint/template-parser": "0.0.1-alpha.32",
     "@angular/cli": "~10.0.3",
     "@angular/compiler-cli": "~10.0.4",
+    "@types/dompurify": "^2.0.2",
+    "@types/marked": "^1.1.0",
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "2.31.0",
     "@typescript-eslint/parser": "2.31.0",
