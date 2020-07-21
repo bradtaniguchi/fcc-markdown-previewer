@@ -7,7 +7,9 @@ import {
   OnDestroy
 } from '@angular/core';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { EditorService } from './editor.service';
+
 @Component({
   selector: 'app-editor',
   template: `
@@ -23,23 +25,23 @@ import { Observable } from 'rxjs';
             [style]="editorStyles$ | async"
           ></textarea>
           <div class="editor-controls flex-layout-row">
-            <span
-              ><button type="button" class="editor-button">Layout</button></span
-            >
-            <span
-              ><button type="button" class="editor-button">
+            <span>
+              <button type="button" class="editor-button">Layout</button>
+            </span>
+            <span>
+              <button type="button" class="editor-button">
                 Font-Size
-              </button></span
-            >
-            <span
-              ><button type="button" class="editor-button">Font</button></span
-            >
+              </button>
+            </span>
+            <span>
+              <button type="button" class="editor-button">Font</button>
+            </span>
           </div>
         </div>
         <div class="flex-50">
           <!-- output -->
           <div #preview>
-            {{ content }}
+            {{ content$ | async }}
           </div>
         </div>
       </div>
@@ -92,8 +94,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
   //TODO: style object to apply different things to the input field.
   public editorStyles$!: Observable<object>;
-  public content!: string;
-  constructor(private headerActions: HeaderActionsService) {}
+  public content$ = new BehaviorSubject(this.editorService.DEFAULT);
+  constructor(
+    private headerActions: HeaderActionsService,
+    private editorService: EditorService
+  ) {}
 
   ngOnInit(): void {}
 
