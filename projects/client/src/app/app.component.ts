@@ -4,10 +4,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-root',
   template: `
     <div class="mat-typography dark-theme full-height">
-      <app-header></app-header>
+      <app-header (toggle)="sidenav.toggle()"></app-header>
       <mat-sidenav-container>
-        <mat-sidenav #sidenav>
-          <app-side-nav (toggle)="sidenav.toggle()"></app-side-nav>
+        <mat-sidenav #sidenav mode="side" [opened]="true">
+          <app-side-nav></app-side-nav>
         </mat-sidenav>
         <mat-sidenav-content>
           <main>
@@ -20,7 +20,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styles: [
     `
       mat-sidenav {
-        width: 30vw;
+        width: 15vw;
       }
     `,
     `

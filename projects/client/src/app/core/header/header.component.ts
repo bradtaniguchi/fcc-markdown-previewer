@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter
+} from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +16,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
           title="Toggle navigation bar"
           type="button"
           mat-icon-button
+          (click)="toggle.emit()"
         >
           <mat-icon>menu</mat-icon>
         </button>
@@ -33,6 +40,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements OnInit {
+  @Output() toggle = new EventEmitter();
   constructor() {}
 
   ngOnInit(): void {}
