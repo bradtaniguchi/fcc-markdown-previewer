@@ -61,6 +61,7 @@
           },
           "configurations": {
             "production": {
+              "deployUrl": "fcc-markdown-previewer/",
               "fileReplacements": [{
                 "replace": "projects/client/src/environments/environment.ts",
                 "with": "projects/client/src/environments/environment.prod.ts"
@@ -115,6 +116,10 @@
               "**/node_modules/**"
             ]
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {}
         }
       }
     }
