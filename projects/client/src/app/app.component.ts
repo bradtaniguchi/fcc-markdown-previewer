@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  template: ` <router-outlet></router-outlet> `,
+  template: `
+    <app-header></app-header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  `,
   styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
-  title = 'client';
-}
+export class AppComponent {}
