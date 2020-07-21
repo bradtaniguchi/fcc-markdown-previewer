@@ -1,13 +1,19 @@
 .flex-layout-row {
   flex-direction: row;
+  display: flex;
 }
 
 .flex-layout-col {
   flex-direction: column;
+  display: flex;
 }
 
 .flex-100 {
   flex: 1;
+}
+
+.flex-50 {
+  flex: 50%;
 }
 
 .full-height {

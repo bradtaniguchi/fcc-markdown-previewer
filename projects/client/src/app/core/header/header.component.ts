@@ -3,8 +3,11 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   Output,
-  EventEmitter
+  EventEmitter,
+  TemplateRef
 } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HeaderActionsService } from './header-actions.service';
 
 @Component({
   selector: 'app-header',
@@ -22,6 +25,9 @@ import {
         </button>
         <span>
           <!-- TODO: Add dynamic component here -->
+          <ng-container
+            *ngTemplateOutlet="headerActions$ | async"
+          ></ng-container>
         </span>
       </span>
       <span>
@@ -41,7 +47,14 @@ import {
 })
 export class HeaderComponent implements OnInit {
   @Output() toggle = new EventEmitter();
-  constructor() {}
+  public headerActions$!: Observable<TemplateRef<any>>;
+  constructor(private headerActions: HeaderActionsService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.headerActions$ = this.getHeaderActions$();
+  }
+
+  private getHeaderActions$(): Observable<TemplateRef<any>> {
+    return this.headerActions.templateRef$;
+  }
 }
