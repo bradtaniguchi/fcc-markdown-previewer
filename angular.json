@@ -61,12 +61,10 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/client/src/environments/environment.ts",
-                  "with": "projects/client/src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "projects/client/src/environments/environment.ts",
+                "with": "projects/client/src/environments/environment.prod.ts"
+              }],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -75,8 +73,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [
-                {
+              "budgets": [{
                   "type": "initial",
                   "maximumWarning": "500kb",
                   "maximumError": "1mb"
@@ -106,9 +103,22 @@
           "options": {
             "browserTarget": "client:build"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.js",
+            "tsConfig": [
+              "projects/client/tsconfig.app.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
         }
       }
-    }},
+    }
+  },
   "cli": {
     "analytics": "c9459424-12e7-4e52-b197-936540594832"
   },
