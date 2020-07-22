@@ -14,10 +14,10 @@ export class LocalForageService {
   constructor() {
     localForage.config({
       driver: localForage.WEBSQL, // Force WebSQL; same as using setDriver()
-      name: 'myApp',
+      name: 'fcc-markdown-previewer',
       version: 1.0,
       size: 4980736, // Size of database, in bytes. WebSQL-only for now.
-      storeName: 'fcc-markdown-previewer', // Should be alphanumeric, with underscores.
+      storeName: 'client_data', // Should be alphanumeric, with underscores.
       description: 'client-side data'
     });
   }
