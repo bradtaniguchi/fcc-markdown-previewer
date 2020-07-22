@@ -1,13 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  OnDestroy,
   OnInit,
-  ViewChild,
   TemplateRef,
-  OnDestroy
+  ViewChild
 } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
-import { Observable, BehaviorSubject } from 'rxjs';
 import { EditorService } from './editor.service';
 
 @Component({
@@ -19,7 +20,8 @@ import { EditorService } from './editor.service';
         <div class="flex-50">
           <!-- text content -->
           <textarea
-            [(ngModel)]="content"
+            #editor
+            (keyup)="content$.next(editor.value)"
             class="full-width"
             id="editor"
             [style]="editorStyles$ | async"
@@ -40,9 +42,7 @@ import { EditorService } from './editor.service';
         </div>
         <div class="flex-50">
           <!-- output -->
-          <div #preview>
-            {{ content$ | async }}
-          </div>
+          <div #preview [innerHTML]="html$ | async"></div>
         </div>
       </div>
     </div>
@@ -95,14 +95,24 @@ export class EditorComponent implements OnInit, OnDestroy {
   //TODO: style object to apply different things to the input field.
   public editorStyles$!: Observable<object>;
   public content$ = new BehaviorSubject(this.editorService.DEFAULT);
+  /**
+   * The calculated html parsed from the content observable
+   */
+  public html$!: Observable<string>;
   constructor(
     private headerActions: HeaderActionsService,
     private editorService: EditorService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.html$ = this.getHtml$();
+  }
 
   ngOnDestroy() {
     this.headerActions.clear();
+  }
+
+  private getHtml$(): Observable<string> {
+    return this.content$.pipe(map((str) => this.editorService.convert(str)));
   }
 }
