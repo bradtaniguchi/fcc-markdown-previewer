@@ -5,7 +5,7 @@ import { EDITOR_DEFAULT } from './editor-default';
 @Injectable({
   providedIn: 'root'
 })
-export class EditorService {
+export class EditorMarkdownService {
   public DEFAULT = EDITOR_DEFAULT;
   /**
    * Converts the given string, to a markdown.

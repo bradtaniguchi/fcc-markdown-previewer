@@ -1,4 +1,4 @@
-export const DEFAULT = `
+export const EDITOR_DEFAULT = `
 # Header
 ## Smaller Header
 
