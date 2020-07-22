@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import DOMpurify from 'dompurify';
 import marked from 'marked';
-
+import { EDITOR_DEFAULT } from './editor-default';
 @Injectable({
   providedIn: 'root'
 })
 export class EditorService {
-  // TODO: update default, get from file
-  public DEFAULT = '';
+  public DEFAULT = EDITOR_DEFAULT;
   /**
    * Converts the given string, to a markdown.
    * Also performs sanitization.

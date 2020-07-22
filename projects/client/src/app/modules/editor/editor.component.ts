@@ -6,10 +6,10 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
-import { EditorService } from './editor.service';
+import { EditorMarkdownService } from './editor-markdown.service';
 
 @Component({
   selector: 'app-editor',
@@ -21,6 +21,7 @@ import { EditorService } from './editor.service';
           <!-- text content -->
           <textarea
             #editor
+            [value]="DEFAULT"
             (keyup)="content$.next(editor.value)"
             class="full-width"
             id="editor"
@@ -93,19 +94,23 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
   //TODO: style object to apply different things to the input field.
+  public DEFAULT = this.editorMarkdownService.DEFAULT;
   public editorStyles$!: Observable<object>;
-  public content$ = new BehaviorSubject(this.editorService.DEFAULT);
+  public content$ = new BehaviorSubject('');
   /**
    * The calculated html parsed from the content observable
    */
   public html$!: Observable<string>;
   constructor(
     private headerActions: HeaderActionsService,
-    private editorService: EditorService
+    private editorMarkdownService: EditorMarkdownService
   ) {}
 
   ngOnInit(): void {
     this.html$ = this.getHtml$();
+    this.editorStyles$ = this.getEditorStyles$();
+    // setup the default value, this needs to be called along with the passed default
+    this.content$.next(this.editorMarkdownService.DEFAULT);
   }
 
   ngOnDestroy() {
@@ -113,6 +118,12 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   private getHtml$(): Observable<string> {
-    return this.content$.pipe(map((str) => this.editorService.convert(str)));
+    return this.content$.pipe(
+      map((str) => this.editorMarkdownService.convert(str))
+    );
+  }
+
+  private getEditorStyles$(): Observable<object> {
+    return of({});
   }
 }
