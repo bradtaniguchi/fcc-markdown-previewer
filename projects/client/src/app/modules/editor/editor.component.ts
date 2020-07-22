@@ -10,6 +10,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { EditorMarkdownService } from './editor-markdown.service';
+import { EditorStyles } from './editor-styles';
 
 @Component({
   selector: 'app-editor',
@@ -17,7 +18,7 @@ import { EditorMarkdownService } from './editor-markdown.service';
     <div class="full-height">
       <!-- TODO: Add editor input field here -->
       <div class="flex-layout-row full-height">
-        <div class="flex-50">
+        <div class="flex-50 max-width-50">
           <!-- text content -->
           <textarea
             #editor
@@ -29,19 +30,19 @@ import { EditorMarkdownService } from './editor-markdown.service';
           ></textarea>
           <div class="editor-controls flex-layout-row">
             <span>
-              <button type="button" class="editor-button">Layout</button>
-            </span>
-            <span>
+              <!-- TODO: add menu -->
               <button type="button" class="editor-button">
-                Font-Size
+                Font-Size ({{ (editorStyles$ | async)?.fontSize }})
               </button>
             </span>
-            <span>
-              <button type="button" class="editor-button">Font</button>
-            </span>
+            <!-- <span>
+              <button type="button" class="editor-button">
+              Font
+              </button>
+            </span> -->
           </div>
         </div>
-        <div class="flex-50">
+        <div class="flex-50 max-width-50">
           <!-- output -->
           <div #preview [innerHTML]="html$ | async"></div>
         </div>
@@ -93,9 +94,8 @@ export class EditorComponent implements OnInit, OnDestroy {
       this.headerActions.setTemplateRef$(actionTemplate);
     }
   }
-  //TODO: style object to apply different things to the input field.
   public DEFAULT = this.editorMarkdownService.DEFAULT;
-  public editorStyles$!: Observable<object>;
+  public editorStyles$!: Observable<EditorStyles>;
   public content$ = new BehaviorSubject('');
   /**
    * The calculated html parsed from the content observable
@@ -123,7 +123,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getEditorStyles$(): Observable<object> {
-    return of({});
+  private getEditorStyles$(): Observable<EditorStyles> {
+    // TODO: get from external source
+    return of({
+      fontSize: '14px'
+    });
   }
 }
