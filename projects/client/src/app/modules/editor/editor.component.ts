@@ -28,21 +28,8 @@ import { EditorStyles } from './editor-styles';
             id="editor"
             [style]="editorStyles$ | async"
           ></textarea>
-          <div class="editor-controls flex-layout-row">
-            <span>
-              <!-- TODO: add menu -->
-              <button type="button" class="editor-button">
-                Font-Size ({{ (editorStyles$ | async)?.fontSize }})
-              </button>
-            </span>
-            <!-- <span>
-              <button type="button" class="editor-button">
-              Font
-              </button>
-            </span> -->
-          </div>
         </div>
-        <div class="flex-50 max-width-50">
+        <div class="flex-50 max-width-50 scroll">
           <!-- output -->
           <div #preview [innerHTML]="html$ | async"></div>
         </div>
@@ -56,14 +43,6 @@ import { EditorStyles } from './editor-styles';
   `,
   styles: [
     `
-      .editor-controls {
-        border: solid 1px rgba(255, 255, 255, 0.12);
-        height: 32px;
-        max-height: 32px;
-        width: 100%;
-      }
-    `,
-    `
       .editor-button {
         background: inherit;
         color: inherit;
@@ -75,7 +54,7 @@ import { EditorStyles } from './editor-styles';
     `
       #editor {
         border: solid 1px rgba(255, 255, 255, 0.12);
-        height: calc(100% - 37px);
+        height: 100%;
         padding: 0;
         margin: 0;
         resize: none;
