@@ -11,33 +11,47 @@ import { ReplaySubject } from 'rxjs';
   providedIn: 'root'
 })
 export class FileService {
-  public files$ = new ReplaySubject<File[]>(1);
+  public files$ = new ReplaySubject<Record<string, File>>(1);
   constructor(private localForage: LocalForageService) {
     localForage
-      .get(StorageKeys.FILES)
+      .get<Record<string, File>>(StorageKeys.FILES)
       .pipe(take(1))
       .subscribe((files) => {
         if (files) {
           return this.files$.next(files);
         }
-        this.files$.next([]);
-        this.localForage.setItem(StorageKeys.FILES, []);
+        this.files$.next({});
+        this.localForage.setItem<Record<string, File>>(StorageKeys.FILES, {});
       });
   }
 
   /**
-   * update/creates the given file
+   * creates the given file
    */
-  public save(file: File) {
+  public save(file: Pick<File, 'name' | 'content'>) {
     this.localForage
       .get<File[]>(StorageKeys.FILES)
       .pipe(take(1))
-      .subscribe((files) => [
-        ...(files || []),
-        {
-          id: shortId(),
-          ...file
-        }
-      ]);
+      .subscribe((files) =>
+        this.localForage.setItem(StorageKeys.FILES, {
+          ...files,
+          [shortId()]: file
+        })
+      );
+  }
+
+  /**
+   * Updates the given file
+   */
+  public update(file: File) {
+    this.localForage
+      .get<Record<string, File>>(StorageKeys.FILES)
+      .pipe(take(1))
+      .subscribe((files) =>
+        this.localForage.setItem(StorageKeys.FILES, {
+          ...files,
+          [file.id]: file
+        })
+      );
   }
 }

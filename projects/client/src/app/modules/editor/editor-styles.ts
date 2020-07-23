@@ -1,3 +1,6 @@
+/**
+ * TODO: Refactor and integrate to app-settings
+ */
 export interface EditorStyles {
   /**
    * Default font-size, should default to '14px'

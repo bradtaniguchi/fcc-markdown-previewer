@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { EditorMarkdownService } from './editor-markdown.service';
 import { EditorStyles } from './editor-styles';
+import { FileService } from '../../services/file.service';
 
 @Component({
   selector: 'app-editor',
@@ -36,7 +37,46 @@ import { EditorStyles } from './editor-styles';
       </div>
     </div>
     <ng-template #actionTemplate>
-      <span>
+      <span class="flex-row">
+        <span>
+          <!-- TODO: Add label?? -->
+          <input
+            type="text"
+            autocomplete="off"
+            aria-label="File Name"
+            placeholder="File Name"
+            (change)="name$.next(nameInput.value)"
+            #nameInput
+          />
+        </span>
+        <span>
+          <button
+            type="button"
+            aria-label="Save"
+            title="Save"
+            (click)="save()"
+            mat-icon-button
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+        </span>
+        <span>
+          <button
+            type="button"
+            aria-label="Delete"
+            title="Delete"
+            (click)="remove()"
+            mat-icon-button
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </span>
+        <!-- 
+      TODO: 
+      1. name
+      2. save
+      3. delete
+      -->
         Editor
       </span>
     </ng-template>
@@ -76,14 +116,15 @@ export class EditorComponent implements OnInit, OnDestroy {
   public DEFAULT = this.editorMarkdownService.DEFAULT;
   public editorStyles$!: Observable<EditorStyles>;
   public content$ = new BehaviorSubject('');
-  public fileName$ = new BehaviorSubject('');
+  public name$ = new BehaviorSubject('');
   /**
    * The calculated html parsed from the content observable
    */
   public html$!: Observable<string>;
   constructor(
     private headerActions: HeaderActionsService,
-    private editorMarkdownService: EditorMarkdownService
+    private editorMarkdownService: EditorMarkdownService,
+    private fileService: FileService
   ) {}
 
   ngOnInit(): void {
@@ -98,8 +139,16 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   public save() {
-    const fileName = this.fileName$.value;
+    const name = this.name$.value;
     const content = this.content$.value;
+    this.fileService.save({
+      name,
+      content
+    });
+    // TODO: notify user
+  }
+  public remove() {
+    // TODO: add later
   }
   private getHtml$(): Observable<string> {
     return this.content$.pipe(

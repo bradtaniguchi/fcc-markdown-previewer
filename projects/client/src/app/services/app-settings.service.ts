@@ -10,7 +10,8 @@ import { StorageKeys } from '../constants/storage-keys';
 export class AppSettingsService {
   public static DEFAULT_SETTINGS: AppSettings = {
     files: [],
-    openedFiles: []
+    openedFiles: [],
+    fontSize: '14px'
   };
   public settings$ = new ReplaySubject<AppSettings>(1);
 
@@ -29,8 +30,18 @@ export class AppSettingsService {
         );
       });
   }
-
-  public update(settings: AppSettings) {
-    // this.localForage.get<AppSettings>()
+  /**
+   * Updates all or part of the app-settings
+   */
+  public update(settings: Partial<AppSettings>) {
+    this.localForage
+      .get<AppSettings>(StorageKeys.SETTINGS)
+      .pipe(take(1))
+      .subscribe((prevSettings) =>
+        this.localForage.setItem(StorageKeys.FILES, {
+          ...prevSettings,
+          ...settings
+        })
+      );
   }
 }
