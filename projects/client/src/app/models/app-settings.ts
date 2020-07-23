@@ -1,3 +1,5 @@
+import { File } from './file';
+
 /**
  * App Settings can be changed in multiple places,
  * and are saved into the local browser via
@@ -7,7 +9,7 @@ export interface AppSettings {
   /**
    * The list of markdown files.
    */
-  files: any[];
+  files: File[];
   /**
    * The list of opened files, shown on the left
    */

@@ -3,6 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { AppSettings } from '../models/app-settings';
 import { LocalForageService } from './local-forage.service';
 import { take, tap } from 'rxjs/operators';
+import { StorageKeys } from '../constants/storage-keys';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +16,7 @@ export class AppSettingsService {
 
   constructor(private localForage: LocalForageService) {
     localForage
-      .get('settings')
+      .get(StorageKeys.SETTINGS)
       .pipe(tap(console.log), take(1))
       .subscribe((settings) => {
         if (settings) {
@@ -23,10 +24,13 @@ export class AppSettingsService {
         }
         this.settings$.next(AppSettingsService.DEFAULT_SETTINGS);
         this.localForage.setItem(
-          'settings',
+          StorageKeys.SETTINGS,
           AppSettingsService.DEFAULT_SETTINGS
         );
       });
-    // TODO: load initial data from localForage, otherwise load defaults
+  }
+
+  public update(settings: AppSettings) {
+    // this.localForage.get<AppSettings>()
   }
 }

@@ -26,6 +26,7 @@
     "localforage": "^1.8.1",
     "marked": "^1.1.1",
     "rxjs": "~6.5.5",
+    "shortid": "^2.2.15",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },
@@ -42,6 +43,7 @@
     "@types/localforage": "0.0.34",
     "@types/marked": "^1.1.0",
     "@types/node": "^12.11.1",
+    "@types/shortid": "0.0.29",
     "@typescript-eslint/eslint-plugin": "2.31.0",
     "@typescript-eslint/parser": "2.31.0",
     "angular-cli-ghpages": "^0.6.2",

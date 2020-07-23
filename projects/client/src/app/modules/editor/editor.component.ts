@@ -76,6 +76,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   public DEFAULT = this.editorMarkdownService.DEFAULT;
   public editorStyles$!: Observable<EditorStyles>;
   public content$ = new BehaviorSubject('');
+  public fileName$ = new BehaviorSubject('');
   /**
    * The calculated html parsed from the content observable
    */
@@ -96,6 +97,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.headerActions.clear();
   }
 
+  public save() {
+    const fileName = this.fileName$.value;
+    const content = this.content$.value;
+  }
   private getHtml$(): Observable<string> {
     return this.content$.pipe(
       map((str) => this.editorMarkdownService.convert(str))
