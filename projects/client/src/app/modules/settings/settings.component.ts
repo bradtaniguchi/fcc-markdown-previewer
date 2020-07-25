@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { AppSettingsService } from '../../services/app-settings.service';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { LocalForageService } from '../../services/local-forage.service';
 
 @Component({
@@ -28,6 +28,7 @@ import { LocalForageService } from '../../services/local-forage.service';
               *ngFor="let fontSize of fontSizes"
               [value]="fontSize"
               [ngStyle]="{ fontSize: fontSize }"
+              [selected]="isFontSelected(fontSize)"
             >
               {{ fontSize }}
             </option>
@@ -49,7 +50,7 @@ import { LocalForageService } from '../../services/local-forage.service';
             <option
               *ngFor="let theme of themes"
               [value]="theme.theme"
-              [selected]="isSelected(theme.theme)"
+              [selected]="isThemeSelected(theme.theme)"
             >
               {{ theme.display }}
             </option>
@@ -110,6 +111,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ];
   public fontSize$!: Observable<string>;
   public theme$!: Observable<string>;
+  private selectedFontSize!: string;
   private selectedTheme!: string;
   private takeUntil = new Subject();
   constructor(
@@ -120,13 +122,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fontSize$ = this.getFontSize$();
     this.theme$ = this.getTheme$();
-    this.theme$.subscribe((theme) => (this.selectedTheme = theme));
+    this.fontSize$
+      .pipe(takeUntil(this.takeUntil))
+      .subscribe((fontSize) => (this.selectedFontSize = fontSize));
+    this.theme$
+      .pipe(takeUntil(this.takeUntil))
+      .subscribe((theme) => (this.selectedTheme = theme));
   }
   ngOnDestroy() {
     this.takeUntil.next();
     this.takeUntil.unsubscribe();
   }
-  isSelected(theme: string) {
+  isFontSelected(fontSize: string) {
+    return fontSize === this.selectedFontSize;
+  }
+  isThemeSelected(theme: string) {
     return theme === this.selectedTheme;
   }
   setDefaultSettings() {
