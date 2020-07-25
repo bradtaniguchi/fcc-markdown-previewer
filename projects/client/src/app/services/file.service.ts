@@ -20,6 +20,17 @@ export class FileService {
     });
   }
 
+  public async get(id: string): Promise<File | undefined> {
+    const files = await this.localForage.get<Record<string, File>>(
+      StorageKeys.FILES
+    );
+    this.files$.next(files);
+    if (!files) {
+      return undefined;
+    }
+    return files[id];
+  }
+
   /**
    * creates the given file
    */

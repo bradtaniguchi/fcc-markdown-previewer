@@ -6,14 +6,23 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, take, tap, mergeMap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Observable,
+  of,
+  Subject,
+  MonoTypeOperatorFunction,
+  OperatorFunction,
+  from
+} from 'rxjs';
+import { map, take, tap, mergeMap, filter, takeUntil } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { EditorMarkdownService } from './editor-markdown.service';
 import { FileService } from '../../services/file.service';
 import { AppSettings } from '../../models/app-settings';
 import { AppSettingsService } from '../../services/app-settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { File } from '../../models/file';
 
 @Component({
   selector: 'app-editor',
@@ -128,6 +137,7 @@ export class EditorComponent implements OnInit, OnDestroy {
    * in the edit route
    */
   private id$!: Observable<string | null>;
+  private takeUntil = new Subject();
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -141,11 +151,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.html$ = this.getHtml$();
     this.id$ = this.getId$();
     this.editorStyles$ = this.appSettingService.settings$;
-    // setup the default value, this needs to be called along with the passed default
-    this.content$.next(this.editorMarkdownService.DEFAULT);
+
+    this.watchId$();
   }
 
   ngOnDestroy() {
+    this.takeUntil.next();
+    this.takeUntil.unsubscribe();
     this.headerActions.clear();
   }
 
@@ -190,5 +202,33 @@ export class EditorComponent implements OnInit, OnDestroy {
     return this.content$.pipe(
       map((str) => this.editorMarkdownService.convert(str))
     );
+  }
+  private watchId$() {
+    this.id$
+      .pipe(
+        mergeMap(async (id: string | null) => {
+          if (!id) {
+            return {
+              id: undefined as any,
+              name: '',
+              content: this.editorMarkdownService.DEFAULT
+            } as File;
+          }
+          const file = await this.fileService.get(id);
+          if (file) {
+            return file;
+          }
+          return {
+            id: undefined as any,
+            name: '',
+            content: this.editorMarkdownService.DEFAULT
+          } as File;
+        }),
+        takeUntil(this.takeUntil)
+      )
+      .subscribe(({ name, content }) => {
+        this.name$.next(name);
+        this.content$.next(content);
+      });
   }
 }
