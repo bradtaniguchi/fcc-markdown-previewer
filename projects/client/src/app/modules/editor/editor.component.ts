@@ -126,7 +126,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.html$ = this.getHtml$();
     this.id$ = this.getId$();
-    this.editorStyles$ = this.appSettingService.settings$;
+    this.editorStyles$ = this.getEditorStyles$();
 
     this.watchId$();
   }
@@ -181,6 +181,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   private getHtml$(): Observable<string> {
     return this.content$.pipe(
       map((str) => this.editorMarkdownService.convert(str))
+    );
+  }
+  private getEditorStyles$(): Observable<Pick<AppSettings, 'fontSize'>> {
+    return this.appSettingService.settings$.pipe(
+      map(({ fontSize }) => ({ fontSize }))
     );
   }
   private watchId$() {

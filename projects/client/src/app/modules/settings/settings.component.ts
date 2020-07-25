@@ -13,13 +13,38 @@ import { LocalForageService } from '../../services/local-forage.service';
           <mat-label>
             Font Size
           </mat-label>
-          <select matNativeControl [value]="fontSize$ | async">
+          <select
+            matNativeControl
+            [value]="fontSize$ | async"
+            (change)="changeFontSize(fontSizeInput.value)"
+            #fontSizeInput
+          >
             <option
               *ngFor="let fontSize of fontSizes"
               [value]="fontSize"
               [ngStyle]="{ fontSize: fontSize }"
             >
               {{ fontSize }}
+            </option>
+          </select>
+          <mat-hint>
+            The font size for the primary editor
+          </mat-hint>
+        </mat-form-field>
+      </section>
+      <section>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>
+            App Theme
+          </mat-label>
+          <select
+            matNativeControl
+            [value]="theme$ | async"
+            (change)="changeTheme(themeInput.value)"
+            #themeInput
+          >
+            <option *ngFor="let theme of themes" [value]="theme.theme">
+              {{ theme.display }}
             </option>
           </select>
           <mat-hint>
@@ -61,7 +86,19 @@ import { LocalForageService } from '../../services/local-forage.service';
 })
 export class SettingsComponent implements OnInit {
   public readonly fontSizes = ['14px', '16px'];
+  public readonly themes = [
+    {
+      theme: 'dark-theme',
+      display: 'Dark Theme'
+    },
+    {
+      theme: 'light-theme',
+      display: 'Light Theme'
+    }
+    // TODO: Add other themes
+  ];
   public fontSize$!: Observable<string>;
+  public theme$!: Observable<string>;
   constructor(
     private appSettingsService: AppSettingsService,
     private localForageService: LocalForageService
@@ -69,6 +106,7 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fontSize$ = this.getFontSize$();
+    this.theme$ = this.getTheme$();
   }
 
   setDefaultSettings() {
@@ -81,9 +119,18 @@ export class SettingsComponent implements OnInit {
     this.localForageService.removeAll$.next();
     // TODO: show prompt
   }
+  changeFontSize(fontSize: string) {
+    console.log('change fontSize', fontSize);
+  }
+  changeTheme(theme: string) {
+    console.log('change theme', theme);
+  }
   private getFontSize$(): Observable<string> {
     return this.appSettingsService.settings$.pipe(
       map((settings) => settings.fontSize)
     );
+  }
+  private getTheme$(): Observable<string> {
+    return this.appSettingsService.settings$.pipe(map(({ theme }) => theme));
   }
 }

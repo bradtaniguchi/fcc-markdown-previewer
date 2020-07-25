@@ -9,7 +9,8 @@ import { take, map, tap, switchMap } from 'rxjs/operators';
 })
 export class AppSettingsService {
   public static DEFAULT_SETTINGS: AppSettings = {
-    fontSize: '14px'
+    fontSize: '14px',
+    theme: 'dark-theme'
   };
   public settings$ = new ReplaySubject<AppSettings>(1);
 

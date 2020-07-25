@@ -10,5 +10,9 @@ export interface AppSettings {
    * The font-size for the editor, defaults to 14px.
    */
   fontSize: string;
+  /**
+   * The theme class to display. Defaults to dark-theme
+   */
+  theme: string;
   // TODO: add editor settings
 }
