@@ -1,5 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  OnDestroy
+} from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { AppSettingsService } from '../../services/app-settings.service';
 import { map, take } from 'rxjs/operators';
 import { LocalForageService } from '../../services/local-forage.service';
@@ -34,16 +39,18 @@ import { LocalForageService } from '../../services/local-forage.service';
       </section>
       <section>
         <mat-form-field class="full-width" appearance="outline">
-          <mat-label>
-            App Theme
-          </mat-label>
+          <mat-label> App Theme </mat-label>
           <select
             matNativeControl
             [value]="theme$ | async"
             (change)="changeTheme(themeInput.value)"
             #themeInput
           >
-            <option *ngFor="let theme of themes" [value]="theme.theme">
+            <option
+              *ngFor="let theme of themes"
+              [value]="theme.theme"
+              [selected]="isSelected(theme.theme)"
+            >
               {{ theme.display }}
             </option>
           </select>
@@ -84,7 +91,7 @@ import { LocalForageService } from '../../services/local-forage.service';
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   public readonly fontSizes = ['14px', '16px'];
   public readonly themes = [
     {
@@ -103,6 +110,8 @@ export class SettingsComponent implements OnInit {
   ];
   public fontSize$!: Observable<string>;
   public theme$!: Observable<string>;
+  private selectedTheme!: string;
+  private takeUntil = new Subject();
   constructor(
     private appSettingsService: AppSettingsService,
     private localForageService: LocalForageService
@@ -111,8 +120,15 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.fontSize$ = this.getFontSize$();
     this.theme$ = this.getTheme$();
+    this.theme$.subscribe((theme) => (this.selectedTheme = theme));
   }
-
+  ngOnDestroy() {
+    this.takeUntil.next();
+    this.takeUntil.unsubscribe();
+  }
+  isSelected(theme: string) {
+    return theme === this.selectedTheme;
+  }
   setDefaultSettings() {
     this.appSettingsService
       .setDefaults()
