@@ -6,23 +6,15 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  of,
-  Subject,
-  MonoTypeOperatorFunction,
-  OperatorFunction,
-  from
-} from 'rxjs';
-import { map, take, tap, mergeMap, filter, takeUntil } from 'rxjs/operators';
-import { HeaderActionsService } from '../../core/header/header-actions.service';
-import { EditorMarkdownService } from './editor-markdown.service';
-import { FileService } from '../../services/file.service';
-import { AppSettings } from '../../models/app-settings';
-import { AppSettingsService } from '../../services/app-settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map, mergeMap, take, takeUntil, tap } from 'rxjs/operators';
+import { HeaderActionsService } from '../../core/header/header-actions.service';
+import { AppSettings } from '../../models/app-settings';
 import { File } from '../../models/file';
+import { AppSettingsService } from '../../services/app-settings.service';
+import { FileService } from '../../services/file.service';
+import { EditorMarkdownService } from './editor-markdown.service';
 
 @Component({
   selector: 'app-editor',
@@ -36,7 +28,7 @@ import { File } from '../../models/file';
             #editor
             [value]="content$ | async"
             (keyup)="content$.next(editor.value)"
-            class="full-width"
+            class="full-width editor"
             id="editor"
             [style]="editorStyles$ | async"
           ></textarea>
@@ -55,9 +47,10 @@ import { File } from '../../models/file';
             type="text"
             autocomplete="off"
             aria-label="File Name"
-            placeholder="File Name"
+            placeholder="No Name"
             [value]="name$ | async"
             (change)="name$.next(nameInput.value)"
+            class="basic-input"
             #nameInput
           />
         </span>
@@ -83,13 +76,6 @@ import { File } from '../../models/file';
             <mat-icon>delete</mat-icon>
           </button>
         </span>
-        <!-- 
-      TODO: 
-      1. name
-      2. save
-      3. delete
-      -->
-        Editor
       </span>
     </ng-template>
   `,
@@ -101,17 +87,6 @@ import { File } from '../../models/file';
         box-shadow: 0px 0px 0px transparent;
         border: 0px solid transparent;
         text-shadow: 0px 0px 0px transparent;
-      }
-    `,
-    `
-      #editor {
-        border: solid 1px rgba(255, 255, 255, 0.12);
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        resize: none;
-        background: inherit;
-        color: inherit;
       }
     `
   ],
