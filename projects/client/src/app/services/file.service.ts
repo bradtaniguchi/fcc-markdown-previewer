@@ -13,45 +13,44 @@ import { ReplaySubject } from 'rxjs';
 export class FileService {
   public files$ = new ReplaySubject<Record<string, File>>(1);
   constructor(private localForage: LocalForageService) {
-    localForage
-      .get<Record<string, File>>(StorageKeys.FILES)
-      .pipe(take(1))
-      .subscribe((files) => {
-        if (files) {
-          return this.files$.next(files);
-        }
-        this.files$.next({});
-        this.localForage.setItem<Record<string, File>>(StorageKeys.FILES, {});
-      });
+    localForage.get<Record<string, File>>(StorageKeys.FILES).then((files) => {
+      if (files) {
+        return this.files$.next(files);
+      }
+      this.files$.next({});
+      this.localForage.setItem<Record<string, File>>(StorageKeys.FILES, {});
+    });
   }
 
   /**
    * creates the given file
    */
-  public save(file: Pick<File, 'name' | 'content'>) {
-    this.localForage
-      .get<File[]>(StorageKeys.FILES)
-      .pipe(take(1))
-      .subscribe((files) =>
-        this.localForage.setItem(StorageKeys.FILES, {
-          ...files,
-          [shortId()]: file
-        })
-      );
+  public async save(
+    file: Pick<File, 'name' | 'content'>
+  ): Promise<Record<string, File>> {
+    const files = await this.localForage.get<Record<string, File>>(
+      StorageKeys.FILES
+    );
+    const id = shortId();
+    return this.localForage.setItem(StorageKeys.FILES, {
+      ...files,
+      [id]: {
+        ...file,
+        id
+      }
+    });
   }
 
   /**
    * Updates the given file
    */
-  public update(file: File) {
-    this.localForage
-      .get<Record<string, File>>(StorageKeys.FILES)
-      .pipe(take(1))
-      .subscribe((files) =>
-        this.localForage.setItem(StorageKeys.FILES, {
-          ...files,
-          [file.id]: file
-        })
-      );
+  public async update(file: File): Promise<any> {
+    const files = await this.localForage.get<Record<string, File>>(
+      StorageKeys.FILES
+    );
+    return this.localForage.setItem(StorageKeys.FILES, {
+      ...files,
+      [file.id]: file
+    });
   }
 }

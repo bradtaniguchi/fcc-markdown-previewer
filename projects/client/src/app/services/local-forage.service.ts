@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import localForage from 'localforage';
-import { from, Observable } from 'rxjs';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,9 @@ export class LocalForageService {
    * The underlying instance of localForage.
    */
   public instance = localForage;
+  /**
+   * If the local forage is ready
+   */
   public ready$ = from(localForage.ready());
   constructor() {
     localForage.config({
@@ -21,20 +24,19 @@ export class LocalForageService {
     });
   }
 
-  public get<T = any>(key: string): Observable<T> {
-    return from(localForage.getItem(key)) as any;
+  public get<T = any>(key: string): Promise<T> {
+    return localForage.getItem(key);
   }
 
-  public setItem<T = any>(key: string, value: T): Observable<T> {
-    console.log('test in set item', { key, value });
-    return from(localForage.setItem(key, value));
+  public setItem<T = any>(key: string, value: T): Promise<T> {
+    return localForage.setItem(key, value);
   }
 
-  public removeItem(key: string) {
-    return from(localForage.removeItem(key));
+  public removeItem(key: string): Promise<void> {
+    return localForage.removeItem(key);
   }
 
-  public clear() {
-    return from(localForage.clear());
+  public clear(): Promise<void> {
+    return localForage.clear();
   }
 }

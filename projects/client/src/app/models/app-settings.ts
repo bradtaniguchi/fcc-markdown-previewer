@@ -9,7 +9,7 @@ export interface AppSettings {
   /**
    * The list of markdown files.
    */
-  files: File[];
+  files: Record<string, File>;
   /**
    * The list of opened files, shown on the left
    */
