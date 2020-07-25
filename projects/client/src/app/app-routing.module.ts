@@ -16,6 +16,11 @@ const routes: Routes = [
       import('./modules/settings/settings.module').then((m) => m.SettingsModule)
   },
   {
+    path: 'editor',
+    pathMatch: 'full',
+    redirectTo: ''
+  },
+  {
     path: '',
     pathMatch: 'full',
     component: EditorComponent

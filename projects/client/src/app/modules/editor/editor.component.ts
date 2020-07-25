@@ -34,7 +34,7 @@ import { File } from '../../models/file';
           <!-- text content -->
           <textarea
             #editor
-            [value]="DEFAULT"
+            [value]="content$ | async"
             (keyup)="content$.next(editor.value)"
             class="full-width"
             id="editor"
@@ -56,6 +56,7 @@ import { File } from '../../models/file';
             autocomplete="off"
             aria-label="File Name"
             placeholder="File Name"
+            [value]="name$ | async"
             (change)="name$.next(nameInput.value)"
             #nameInput
           />
@@ -169,6 +170,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           name: this.name$.value,
           content: this.content$.value
         })),
+        tap((val) => console.log('test with save', val)),
         mergeMap(({ id, name, content }) =>
           !!id
             ? this.fileService.update({
@@ -184,7 +186,10 @@ export class EditorComponent implements OnInit, OnDestroy {
         // TODO: notify user
         take(1)
       )
-      .subscribe(({ id }) => this.router.navigate(['', id]));
+      .subscribe(({ id }) => {
+        console.log('test with id', { id });
+        this.router.navigate(['', id]);
+      });
   }
   public remove() {
     this.id$
@@ -206,27 +211,30 @@ export class EditorComponent implements OnInit, OnDestroy {
   private watchId$() {
     this.id$
       .pipe(
-        mergeMap(async (id: string | null) => {
+        mergeMap((id: string | null) => {
           if (!id) {
-            return {
+            return of({
               id: undefined as any,
               name: '',
               content: this.editorMarkdownService.DEFAULT
-            } as File;
+            } as File);
           }
-          const file = await this.fileService.get(id);
-          if (file) {
-            return file;
-          }
-          return {
-            id: undefined as any,
-            name: '',
-            content: this.editorMarkdownService.DEFAULT
-          } as File;
+          return this.fileService.get(id).pipe(
+            map(
+              (file) =>
+                file ||
+                ({
+                  id: undefined as any,
+                  name: '',
+                  content: this.editorMarkdownService.DEFAULT
+                } as File)
+            )
+          );
         }),
         takeUntil(this.takeUntil)
       )
       .subscribe(({ name, content }) => {
+        console.log('test in watchId', { name, content });
         this.name$.next(name);
         this.content$.next(content);
       });
