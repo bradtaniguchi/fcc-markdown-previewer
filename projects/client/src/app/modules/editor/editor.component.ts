@@ -7,12 +7,13 @@ import {
   ViewChild
 } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take, tap, mergeMap } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { EditorMarkdownService } from './editor-markdown.service';
 import { FileService } from '../../services/file.service';
 import { AppSettings } from '../../models/app-settings';
 import { AppSettingsService } from '../../services/app-settings.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-editor',
@@ -122,7 +123,14 @@ export class EditorComponent implements OnInit, OnDestroy {
    * The calculated html parsed from the content observable
    */
   public html$!: Observable<string>;
+  /**
+   * The id in the url, this is only available
+   * in the edit route
+   */
+  private id$!: Observable<string | null>;
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private headerActions: HeaderActionsService,
     private appSettingService: AppSettingsService,
     private editorMarkdownService: EditorMarkdownService,
@@ -131,6 +139,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.html$ = this.getHtml$();
+    this.id$ = this.getId$();
     this.editorStyles$ = this.appSettingService.settings$;
     // setup the default value, this needs to be called along with the passed default
     this.content$.next(this.editorMarkdownService.DEFAULT);
@@ -141,16 +150,41 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   public save() {
-    const name = this.name$.value;
-    const content = this.content$.value;
-    this.fileService.save({
-      name,
-      content
-    });
-    // TODO: notify user
+    this.id$
+      .pipe(
+        map((id) => ({
+          id,
+          name: this.name$.value,
+          content: this.content$.value
+        })),
+        mergeMap(({ id, name, content }) =>
+          !!id
+            ? this.fileService.update({
+                id,
+                content,
+                name
+              })
+            : this.fileService.create({
+                name,
+                content
+              })
+        ),
+        // TODO: notify user
+        take(1)
+      )
+      .subscribe(({ id }) => this.router.navigate(['', id]));
   }
   public remove() {
-    // TODO: add later
+    this.id$
+      .pipe(
+        mergeMap((id) => this.fileService.remove(id as string)),
+        take(1)
+        // TODO: add notify user
+      )
+      .subscribe(() => this.router.navigate(['']));
+  }
+  private getId$(): Observable<string | null> {
+    return this.route.paramMap.pipe(map((paramMap) => paramMap.get('id')));
   }
   private getHtml$(): Observable<string> {
     return this.content$.pipe(

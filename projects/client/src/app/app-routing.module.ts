@@ -4,18 +4,26 @@ import { EditorComponent } from './modules/editor/editor.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: EditorComponent
-  },
-  {
     path: 'files',
+    pathMatch: 'full',
     loadChildren: () =>
       import('./modules/files/files.module').then((m) => m.FilesModule)
   },
   {
     path: 'settings',
+    pathMatch: 'full',
     loadChildren: () =>
       import('./modules/settings/settings.module').then((m) => m.SettingsModule)
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    component: EditorComponent
+  },
+  {
+    path: ':id',
+    pathMatch: 'full',
+    component: EditorComponent
   },
   {
     path: '**',
