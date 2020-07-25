@@ -93,7 +93,8 @@ import { LocalForageService } from '../../services/local-forage.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-  public readonly fontSizes = ['14px', '16px'];
+  // TODO: Update later
+  public readonly fontSizes = ['14px', '16px', '20px', '24px', '32px'];
   public readonly themes = [
     {
       theme: 'dark-theme',
