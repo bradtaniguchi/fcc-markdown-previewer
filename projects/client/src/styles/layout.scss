@@ -28,6 +28,18 @@
   width: 100%;
 }
 
+.scroll {
+  overflow: auto;
+}
+
 .no-overflow {
   overflow: none;
+}
+
+.padding {
+  padding: 8px;
+}
+
+.margin {
+  margin: 8px;
 }

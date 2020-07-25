@@ -6,11 +6,23 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Observable,
+  of,
+  Subject,
+  MonoTypeOperatorFunction,
+  OperatorFunction,
+  from
+} from 'rxjs';
+import { map, take, tap, mergeMap, filter, takeUntil } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { EditorMarkdownService } from './editor-markdown.service';
-import { EditorStyles } from './editor-styles';
+import { FileService } from '../../services/file.service';
+import { AppSettings } from '../../models/app-settings';
+import { AppSettingsService } from '../../services/app-settings.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { File } from '../../models/file';
 
 @Component({
   selector: 'app-editor',
@@ -22,47 +34,66 @@ import { EditorStyles } from './editor-styles';
           <!-- text content -->
           <textarea
             #editor
-            [value]="DEFAULT"
+            [value]="content$ | async"
             (keyup)="content$.next(editor.value)"
             class="full-width"
             id="editor"
             [style]="editorStyles$ | async"
           ></textarea>
-          <div class="editor-controls flex-layout-row">
-            <span>
-              <!-- TODO: add menu -->
-              <button type="button" class="editor-button">
-                Font-Size ({{ (editorStyles$ | async)?.fontSize }})
-              </button>
-            </span>
-            <!-- <span>
-              <button type="button" class="editor-button">
-              Font
-              </button>
-            </span> -->
-          </div>
         </div>
-        <div class="flex-50 max-width-50">
+        <div class="flex-50 max-width-50 scroll">
           <!-- output -->
           <div #preview [innerHTML]="html$ | async"></div>
         </div>
       </div>
     </div>
     <ng-template #actionTemplate>
-      <span>
+      <span class="flex-row">
+        <span>
+          <!-- TODO: Add label?? -->
+          <input
+            type="text"
+            autocomplete="off"
+            aria-label="File Name"
+            placeholder="File Name"
+            [value]="name$ | async"
+            (change)="name$.next(nameInput.value)"
+            #nameInput
+          />
+        </span>
+        <span>
+          <button
+            type="button"
+            aria-label="Save"
+            title="Save"
+            (click)="save()"
+            mat-icon-button
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+        </span>
+        <span>
+          <button
+            type="button"
+            aria-label="Delete"
+            title="Delete"
+            (click)="remove()"
+            mat-icon-button
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </span>
+        <!-- 
+      TODO: 
+      1. name
+      2. save
+      3. delete
+      -->
         Editor
       </span>
     </ng-template>
   `,
   styles: [
-    `
-      .editor-controls {
-        border: solid 1px rgba(255, 255, 255, 0.12);
-        height: 32px;
-        max-height: 32px;
-        width: 100%;
-      }
-    `,
     `
       .editor-button {
         background: inherit;
@@ -75,7 +106,7 @@ import { EditorStyles } from './editor-styles';
     `
       #editor {
         border: solid 1px rgba(255, 255, 255, 0.12);
-        height: calc(100% - 37px);
+        height: 100%;
         padding: 0;
         margin: 0;
         resize: none;
@@ -95,38 +126,117 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
   public DEFAULT = this.editorMarkdownService.DEFAULT;
-  public editorStyles$!: Observable<EditorStyles>;
+  public editorStyles$!: Observable<Pick<AppSettings, 'fontSize'>>;
   public content$ = new BehaviorSubject('');
+  public name$ = new BehaviorSubject('');
   /**
    * The calculated html parsed from the content observable
    */
   public html$!: Observable<string>;
+  /**
+   * The id in the url, this is only available
+   * in the edit route
+   */
+  private id$!: Observable<string | null>;
+  private takeUntil = new Subject();
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private headerActions: HeaderActionsService,
-    private editorMarkdownService: EditorMarkdownService
+    private appSettingService: AppSettingsService,
+    private editorMarkdownService: EditorMarkdownService,
+    private fileService: FileService
   ) {}
 
   ngOnInit(): void {
     this.html$ = this.getHtml$();
-    this.editorStyles$ = this.getEditorStyles$();
-    // setup the default value, this needs to be called along with the passed default
-    this.content$.next(this.editorMarkdownService.DEFAULT);
+    this.id$ = this.getId$();
+    this.editorStyles$ = this.appSettingService.settings$;
+
+    this.watchId$();
   }
 
   ngOnDestroy() {
+    this.takeUntil.next();
+    this.takeUntil.unsubscribe();
     this.headerActions.clear();
   }
 
+  public save() {
+    this.id$
+      .pipe(
+        map((id) => ({
+          id,
+          name: this.name$.value,
+          content: this.content$.value
+        })),
+        tap((val) => console.log('test with save', val)),
+        mergeMap(({ id, name, content }) =>
+          !!id
+            ? this.fileService.update({
+                id,
+                content,
+                name
+              })
+            : this.fileService.create({
+                name,
+                content
+              })
+        ),
+        // TODO: notify user
+        take(1)
+      )
+      .subscribe(({ id }) => {
+        console.log('test with id', { id });
+        this.router.navigate(['', id]);
+      });
+  }
+  public remove() {
+    this.id$
+      .pipe(
+        mergeMap((id) => this.fileService.remove(id as string)),
+        take(1)
+        // TODO: add notify user
+      )
+      .subscribe(() => this.router.navigate(['']));
+  }
+  private getId$(): Observable<string | null> {
+    return this.route.paramMap.pipe(map((paramMap) => paramMap.get('id')));
+  }
   private getHtml$(): Observable<string> {
     return this.content$.pipe(
       map((str) => this.editorMarkdownService.convert(str))
     );
   }
-
-  private getEditorStyles$(): Observable<EditorStyles> {
-    // TODO: get from external source
-    return of({
-      fontSize: '14px'
-    });
+  private watchId$() {
+    this.id$
+      .pipe(
+        mergeMap((id: string | null) => {
+          if (!id) {
+            return of({
+              id: undefined as any,
+              name: '',
+              content: this.editorMarkdownService.DEFAULT
+            } as File);
+          }
+          return this.fileService.get(id).pipe(
+            map(
+              (file) =>
+                file ||
+                ({
+                  id: undefined as any,
+                  name: '',
+                  content: this.editorMarkdownService.DEFAULT
+                } as File)
+            )
+          );
+        }),
+        takeUntil(this.takeUntil)
+      )
+      .subscribe(({ name, content }) => {
+        console.log('test in watchId', { name, content });
+        this.name$.next(name);
+        this.content$.next(content);
+      });
   }
 }
