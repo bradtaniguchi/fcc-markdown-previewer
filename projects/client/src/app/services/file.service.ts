@@ -15,6 +15,7 @@ export class FileService {
    */
   public files$ = new ReplaySubject<Record<string, File>>(1);
   constructor(private localForage: LocalForageService) {
+    this.localForage.removeAll$.subscribe(() => this.files$.next({}));
     this.files$.subscribe((files) =>
       this.localForage.setItem<Record<string, File>>(StorageKeys.FILES, files)
     );

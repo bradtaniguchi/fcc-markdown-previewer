@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AppSettingsService } from './services/app-settings.service';
 
 @Component({
   selector: 'app-root',
   template: `
-    <div class="mat-typography dark-theme full-height">
+    <div class="mat-typography full-height" [ngClass]="(theme$ | async) || ''">
       <app-header (toggle)="sidenav.toggle()"></app-header>
       <mat-sidenav-container>
         <mat-sidenav #sidenav mode="side" [opened]="true">
@@ -31,4 +34,15 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  public theme$!: Observable<string>;
+  constructor(private appSettings: AppSettingsService) {}
+
+  ngOnInit() {
+    this.theme$ = this.getTheme$();
+  }
+
+  private getTheme$() {
+    return this.appSettings.settings$.pipe(map(({ theme }) => theme));
+  }
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import localForage from 'localforage';
-import { from } from 'rxjs';
+import { from, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,10 @@ export class LocalForageService {
    * If the local forage is ready
    */
   public ready$ = from(localForage.ready());
+  /**
+   * Subject that emits if we delete EVERYTHING.
+   */
+  public removeAll$ = new Subject();
   constructor() {
     localForage.config({
       driver: localForage.INDEXEDDB, // Force WebSQL; same as using setDriver()
