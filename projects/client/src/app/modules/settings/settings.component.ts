@@ -120,10 +120,20 @@ export class SettingsComponent implements OnInit {
     // TODO: show prompt
   }
   changeFontSize(fontSize: string) {
-    console.log('change fontSize', fontSize);
+    this.appSettingsService
+      .update({
+        fontSize
+      })
+      .pipe(take(1))
+      .subscribe(() => {});
   }
   changeTheme(theme: string) {
-    console.log('change theme', theme);
+    this.appSettingsService
+      .update({
+        theme
+      })
+      .pipe(take(1))
+      .subscribe(() => {});
   }
   private getFontSize$(): Observable<string> {
     return this.appSettingsService.settings$.pipe(
