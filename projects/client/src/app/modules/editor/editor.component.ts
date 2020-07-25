@@ -10,8 +10,9 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { EditorMarkdownService } from './editor-markdown.service';
-import { EditorStyles } from './editor-styles';
 import { FileService } from '../../services/file.service';
+import { AppSettings } from '../../models/app-settings';
+import { AppSettingsService } from '../../services/app-settings.service';
 
 @Component({
   selector: 'app-editor',
@@ -114,7 +115,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
   public DEFAULT = this.editorMarkdownService.DEFAULT;
-  public editorStyles$!: Observable<EditorStyles>;
+  public editorStyles$!: Observable<Pick<AppSettings, 'fontSize'>>;
   public content$ = new BehaviorSubject('');
   public name$ = new BehaviorSubject('');
   /**
@@ -123,13 +124,14 @@ export class EditorComponent implements OnInit, OnDestroy {
   public html$!: Observable<string>;
   constructor(
     private headerActions: HeaderActionsService,
+    private appSettingService: AppSettingsService,
     private editorMarkdownService: EditorMarkdownService,
     private fileService: FileService
   ) {}
 
   ngOnInit(): void {
     this.html$ = this.getHtml$();
-    this.editorStyles$ = this.getEditorStyles$();
+    this.editorStyles$ = this.appSettingService.settings$;
     // setup the default value, this needs to be called along with the passed default
     this.content$.next(this.editorMarkdownService.DEFAULT);
   }
@@ -154,12 +156,5 @@ export class EditorComponent implements OnInit, OnDestroy {
     return this.content$.pipe(
       map((str) => this.editorMarkdownService.convert(str))
     );
-  }
-
-  private getEditorStyles$(): Observable<EditorStyles> {
-    // TODO: get from external source
-    return of({
-      fontSize: '14px'
-    });
   }
 }
