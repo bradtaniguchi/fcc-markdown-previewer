@@ -32,3 +32,20 @@
 
   @include angular-material-theme($light-theme);
 }
+
+.hacker-theme {
+  color: $light-primary-text;
+
+  $hacker-primary: mat-palette($mat-green);
+  $hacker-accent: mat-palette(
+    $mat-green,
+    A200,
+    A400,
+    A700
+  ); // not really used, or matching
+  $hacker-warn: mat-palette($mat-red);
+
+  $hacker-theme: mat-dark-theme($hacker-primary, $hacker-accent, $hacker-warn);
+
+  @include angular-material-theme($hacker-theme);
+}

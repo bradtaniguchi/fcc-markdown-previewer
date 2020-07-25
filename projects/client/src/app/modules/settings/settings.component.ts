@@ -94,6 +94,10 @@ export class SettingsComponent implements OnInit {
     {
       theme: 'light-theme',
       display: 'Light Theme'
+    },
+    {
+      theme: 'hacker-theme',
+      display: 'Hacker Theme'
     }
     // TODO: Add other themes
   ];
