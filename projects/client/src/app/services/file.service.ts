@@ -14,6 +14,7 @@ export class FileService {
    * An observable of all the files
    */
   public files$ = new ReplaySubject<Record<string, File>>(1);
+
   constructor(private localForage: LocalForageService) {
     this.localForage.removeAll$.subscribe(() => this.files$.next({}));
     this.files$.subscribe((files) =>
@@ -87,5 +88,15 @@ export class FileService {
       take(1),
       tap(() => this.files$.next({}))
     );
+  }
+  /**
+   * Returns an observable based upon the given params.
+   */
+  public searchFiles$(params: {
+    orderBy?: keyof File;
+    query?: string;
+  }): Observable<File[]> {
+    // TODO
+    return this.files$.pipe(map((files) => Object.values(files)));
   }
 }

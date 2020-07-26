@@ -23,11 +23,11 @@ import { HeaderActionsService } from './header-actions.service';
         >
           <mat-icon>menu</mat-icon>
         </button>
-        <span>
+        <!-- NOTE Not sure why this is needed -->
+        <span class="flex-layout-row" style="display: inline-flex">
           <!-- TODO: Add dynamic component here -->
-          <ng-container
-            *ngTemplateOutlet="headerActions$ | async"
-          ></ng-container>
+          <ng-container *ngTemplateOutlet="headerActions$ | async">
+          </ng-container>
         </span>
       </span>
       <span>

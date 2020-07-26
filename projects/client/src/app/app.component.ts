@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppSettingsService } from './services/app-settings.service';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-root',
@@ -36,10 +37,18 @@ import { AppSettingsService } from './services/app-settings.service';
 })
 export class AppComponent implements OnInit {
   public theme$!: Observable<string>;
-  constructor(private appSettings: AppSettingsService) {}
+  constructor(
+    private appSettings: AppSettingsService,
+    private overlayContainer: OverlayContainer
+  ) {}
 
   ngOnInit() {
     this.theme$ = this.getTheme$();
+    this.theme$.subscribe((theme) => {
+      const containerElement = this.overlayContainer.getContainerElement();
+      containerElement.className = 'cdk-overlay-container';
+      containerElement.classList.add(theme);
+    });
   }
 
   private getTheme$() {
