@@ -66,6 +66,15 @@ import { take } from 'rxjs/operators';
         </mat-list-item>
       </mat-list>
     </ng-container>
+    <a
+      aria-label="Create File"
+      [routerLink]="['/editor']"
+      mat-fab
+      title="Create File"
+      class="fab"
+    >
+      <mat-icon>add</mat-icon>
+    </a>
     <ng-template #actionTemplate>
       <span class="flex-row">
         <span>
