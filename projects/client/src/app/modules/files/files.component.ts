@@ -1,16 +1,16 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   OnInit,
-  ChangeDetectionStrategy,
-  ViewChild,
   TemplateRef,
-  OnDestroy
+  ViewChild
 } from '@angular/core';
-import { File } from '../../models/file';
 import { Observable } from 'rxjs';
-import { FileService } from '../../services/file.service';
-import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { take } from 'rxjs/operators';
+import { HeaderActionsService } from '../../core/header/header-actions.service';
+import { File } from '../../models/file';
+import { FileService } from '../../services/file.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-files',
@@ -35,7 +35,12 @@ import { take } from 'rxjs/operators';
             <div class="flex-layout-row flex-align-center">
               <span>
                 <!-- TODO: add checkbox -->
-                <mat-checkbox color="primary" aria-label="Select">
+                <mat-checkbox
+                  color="primary"
+                  aria-label="Select"
+                  [checked]="selection.isSelected(file.id)"
+                  (change)="selection.toggle(file.id)"
+                >
                 </mat-checkbox>
               </span>
               <a [routerLink]="['/editor', file.id]">
@@ -76,11 +81,24 @@ import { take } from 'rxjs/operators';
       <mat-icon>add</mat-icon>
     </a>
     <ng-template #actionTemplate>
-      <span class="flex-row">
+      <span class="flex-layout-row align-center full-width">
         <span>
           <h3>
             Files
           </h3>
+        </span>
+        <span class="full-width"></span>
+        <span>
+          <button
+            *ngIf="selection.hasValue()"
+            type="button"
+            aria-label="Remove Selected"
+            title="Remove Selected"
+            (click)="removeSelected()"
+            mat-icon-button
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </span>
       </span>
     </ng-template>
@@ -97,6 +115,7 @@ export class FilesComponent implements OnInit {
       this.headerActions.setTemplateRef$(actionTemplate);
     }
   }
+  public selection = new SelectionModel<string>(true, []);
   public files$!: Observable<File[]>;
   constructor(
     private headerActions: HeaderActionsService,
@@ -112,6 +131,9 @@ export class FilesComponent implements OnInit {
       .remove(file.id)
       .pipe(take(1))
       .subscribe(() => {});
+  }
+  removeSelected() {
+    // TODO:
   }
   private getFiles$(): Observable<File[]> {
     // TODO: Add search logic
