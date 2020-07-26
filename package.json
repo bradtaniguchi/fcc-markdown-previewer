@@ -8,6 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "build:stats": "ts-node --project=./tools/tsconfig.tools.json ./tools/build-stats.ts",
     "clean": "npx rimraf dist"
   },
   "private": true,
