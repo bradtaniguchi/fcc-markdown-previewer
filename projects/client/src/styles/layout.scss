@@ -12,6 +12,12 @@
   flex: 1;
 }
 
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .align-center {
   align-items: baseline;
 }
@@ -46,4 +52,8 @@
 
 .margin {
   margin: 8px;
+}
+
+.no-margin {
+  margin: 0;
 }

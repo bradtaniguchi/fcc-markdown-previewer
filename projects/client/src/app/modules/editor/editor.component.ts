@@ -97,6 +97,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     actionTemplate: TemplateRef<any>
   ) {
     if (actionTemplate) {
+      this.headerActions.clear();
       this.headerActions.setTemplateRef$(actionTemplate);
     }
   }
@@ -134,7 +135,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.takeUntil.next();
     this.takeUntil.unsubscribe();
-    this.headerActions.clear();
   }
 
   public save() {

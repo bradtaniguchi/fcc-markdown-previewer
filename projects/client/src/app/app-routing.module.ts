@@ -18,17 +18,17 @@ const routes: Routes = [
   {
     path: 'editor',
     pathMatch: 'full',
-    redirectTo: ''
+    component: EditorComponent
+  },
+  {
+    path: 'editor/:id',
+    pathMatch: 'full',
+    component: EditorComponent
   },
   {
     path: '',
     pathMatch: 'full',
-    component: EditorComponent
-  },
-  {
-    path: ':id',
-    pathMatch: 'full',
-    component: EditorComponent
+    redirectTo: '/editor'
   },
   {
     path: '**',
