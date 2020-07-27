@@ -5,8 +5,13 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import {
+  Observable,
+  ReplaySubject,
+  combineLatest,
+  BehaviorSubject
+} from 'rxjs';
+import { take, mergeMap } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { File } from '../../models/file';
 import { FileService } from '../../services/file.service';
@@ -83,10 +88,16 @@ import { SelectionModel } from '@angular/cdk/collections';
     <ng-template #actionTemplate>
       <span class="flex-layout-row align-center full-width">
         <span>
-          <h3>
-            Files
-          </h3>
+          <input
+            type="text"
+            autocomplete="off"
+            (keyup)="query$.next(queryInput.value)"
+            placeholder="Search"
+            class="basic-input"
+            #queryInput
+          />
         </span>
+        <!-- TODO: sort by property? -->
         <span class="full-width"></span>
         <span>
           <button
@@ -116,6 +127,8 @@ export class FilesComponent implements OnInit {
     }
   }
   public selection = new SelectionModel<string>(true, []);
+  public query$ = new BehaviorSubject<string>('');
+  public orderBy$ = new BehaviorSubject<keyof File>('name');
   public files$!: Observable<File[]>;
   constructor(
     private headerActions: HeaderActionsService,
@@ -133,10 +146,16 @@ export class FilesComponent implements OnInit {
       .subscribe(() => {});
   }
   removeSelected() {
-    // TODO:
+    this.fileService
+      .removeMultiple(this.selection.selected)
+      .pipe(take(1))
+      .subscribe(() => {});
   }
   private getFiles$(): Observable<File[]> {
-    // TODO: Add search logic
-    return this.fileService.searchFiles$({});
+    return combineLatest([this.orderBy$, this.query$]).pipe(
+      mergeMap(([orderBy, query]) =>
+        this.fileService.searchFiles$({ orderBy, query })
+      )
+    );
   }
 }

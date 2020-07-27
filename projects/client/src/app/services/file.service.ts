@@ -96,7 +96,20 @@ export class FileService {
     orderBy?: keyof File;
     query?: string;
   }): Observable<File[]> {
-    // TODO
+    const { query, orderBy } = params;
+    // TODO:
     return this.files$.pipe(map((files) => Object.values(files)));
+  }
+
+  /**
+   * Removes multiple, then returns the still existing
+   */
+  public removeMultiple(ids: string[]): Observable<Record<string, File>> {
+    return this.files$.pipe(
+      map((files) => {
+        ids.forEach((id) => delete files[id]);
+        return { ...files };
+      })
+    );
   }
 }
