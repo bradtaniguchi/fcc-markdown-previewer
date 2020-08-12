@@ -55,18 +55,18 @@
               "projects/client/src/favicon.ico",
               "projects/client/src/assets"
             ],
-            "styles": [
-              "projects/client/src/styles.scss"
-            ],
+            "styles": ["projects/client/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "deployUrl": "fcc-markdown-previewer/",
-              "fileReplacements": [{
-                "replace": "projects/client/src/environments/environment.ts",
-                "with": "projects/client/src/environments/environment.prod.ts"
-              }],
+              "fileReplacements": [
+                {
+                  "replace": "projects/client/src/environments/environment.ts",
+                  "with": "projects/client/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -75,7 +75,8 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [{
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "500kb",
                   "maximumError": "1mb"
@@ -110,12 +111,21 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "eslintConfig": ".eslintrc.js",
-            "tsConfig": [
-              "projects/client/tsconfig.app.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["projects/client/tsconfig.app.json"],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "projects/client-e2e/cypress.json",
+            "tsConfig": "projects/client-e2e/tsconfig.e2e.json",
+            "devServerTarget": "client:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "client:serve"
+            }
           }
         },
         "deploy": {

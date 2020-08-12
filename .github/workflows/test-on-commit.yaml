@@ -3,13 +3,15 @@ on:
   push:
     branches:
       - master
+      # Remove this later
+      - feat/cypress
     tags-ignore:
-      - '*'
+      - "*"
   pull_request:
     branches:
       - master
     tags-ignore:
-      - '*'
+      - "*"
 
 jobs:
   test-on-commit:
@@ -29,4 +31,10 @@ jobs:
       - name: build-stats
         run: npm run build:stats
       # Add e2e testing
-
+      - name: e2e
+        run: npm run e2e -- --headless
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: client-e2e
+          path: ./dist/cypress/client/**
