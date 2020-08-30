@@ -105,11 +105,15 @@ export class FileService {
    * Removes multiple, then returns the still existing
    */
   public removeMultiple(ids: string[]): Observable<Record<string, File>> {
-    return this.files$.pipe(
-      map((files) => {
-        ids.forEach((id) => delete files[id]);
-        return { ...files };
-      })
-    );
+    this.files$
+      .pipe(
+        take(1),
+        map((files) => {
+          ids.forEach((id) => delete files[id]);
+          return { ...files };
+        })
+      )
+      .subscribe((files) => this.files$.next(files));
+    return this.files$;
   }
 }

@@ -143,13 +143,13 @@ export class FilesComponent implements OnInit {
     this.fileService
       .remove(file.id)
       .pipe(take(1))
-      .subscribe(() => {});
+      .subscribe(() => console.log('removed single file', { file }));
   }
   removeSelected() {
     this.fileService
       .removeMultiple(this.selection.selected)
       .pipe(take(1))
-      .subscribe(() => {});
+      .subscribe(() => console.log('removed selected'));
   }
   private getFiles$(): Observable<File[]> {
     return combineLatest([this.orderBy$, this.query$]).pipe(
