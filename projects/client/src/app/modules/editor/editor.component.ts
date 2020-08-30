@@ -163,7 +163,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       )
       .subscribe(({ id }) => {
         console.log('test with id', { id });
-        this.router.navigate(['', id]);
+        this.router.navigate(['/editor', id]);
       });
   }
   public remove() {

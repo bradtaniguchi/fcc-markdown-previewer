@@ -13,7 +13,7 @@ import { HeaderActionsService } from './header-actions.service';
   selector: 'app-header',
   template: `
     <mat-toolbar color="primary" class="flex-layout-row">
-      <span class="flex-100">
+      <span class="flex-100 flex-layout-row">
         <button
           aria-label="Toggle navigation Bar"
           title="Toggle navigation bar"
@@ -24,7 +24,7 @@ import { HeaderActionsService } from './header-actions.service';
           <mat-icon>menu</mat-icon>
         </button>
         <!-- NOTE Not sure why this is needed -->
-        <span class="flex-layout-row" style="display: inline-flex">
+        <span class="flex-layout-row full-width">
           <!-- TODO: Add dynamic component here -->
           <ng-container *ngTemplateOutlet="headerActions$ | async">
           </ng-container>

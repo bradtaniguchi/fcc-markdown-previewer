@@ -5,6 +5,7 @@ import shortId from 'shortid';
 import { StorageKeys } from '../constants/storage-keys';
 import { File } from '../models/file';
 import { LocalForageService } from './local-forage.service';
+import Fuse from 'fuse.js';
 
 @Injectable({
   providedIn: 'root'
@@ -93,10 +94,63 @@ export class FileService {
    * Returns an observable based upon the given params.
    */
   public searchFiles$(params: {
-    orderBy?: keyof File;
-    query?: string;
+    /**
+     * The property to orderBy, defaults to name
+     */
+    orderBy: keyof File;
+    /**
+     * The search query
+     */
+    query: string;
   }): Observable<File[]> {
-    // TODO
-    return this.files$.pipe(map((files) => Object.values(files)));
+    const { query, orderBy = 'name' } = params;
+    return this.files$.pipe(
+      map(Object.values),
+      map((files) => {
+        const fuse = new Fuse(files, {
+          sortFn: orderBy
+            ? ({ item: itemA }, { item: itemB }) =>
+                // TODO: test order check!
+                itemA[orderBy] > itemB[orderBy] ? -1 : 1
+            : undefined,
+
+          includeScore: true,
+          keys: [
+            {
+              name: 'name' as keyof File,
+              weight: 0.7
+            },
+            {
+              name: 'content' as keyof File,
+              weight: 0.3
+            }
+          ]
+        });
+        if (query) {
+          return fuse.search<File>(query).map(({ item }) => item);
+        }
+
+        if (orderBy) {
+          return files.sort((a, b) => (a > b ? -1 : 1));
+        }
+        return files;
+      })
+    );
+  }
+
+  /**
+   * Removes multiple, then returns the still existing
+   */
+  public removeMultiple(ids: string[]): Observable<Record<string, File>> {
+    this.files$
+      .pipe(
+        take(1),
+        map((files) => {
+          ids.forEach((id) => delete files[id]);
+          return { ...files };
+        })
+      )
+      .subscribe((files) => this.files$.next(files));
+    return this.files$;
   }
 }
