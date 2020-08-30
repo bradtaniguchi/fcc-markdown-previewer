@@ -11,7 +11,7 @@ import {
   combineLatest,
   BehaviorSubject
 } from 'rxjs';
-import { take, mergeMap } from 'rxjs/operators';
+import { take, mergeMap, distinctUntilChanged } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { File } from '../../models/file';
 import { FileService } from '../../services/file.service';
@@ -152,7 +152,10 @@ export class FilesComponent implements OnInit {
       .subscribe(() => console.log('removed selected'));
   }
   private getFiles$(): Observable<File[]> {
-    return combineLatest([this.orderBy$, this.query$]).pipe(
+    return combineLatest([
+      this.orderBy$.pipe(distinctUntilChanged()),
+      this.query$.pipe(distinctUntilChanged())
+    ]).pipe(
       mergeMap(([orderBy, query]) =>
         this.fileService.searchFiles$({ orderBy, query })
       )
