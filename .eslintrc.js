@@ -5,11 +5,11 @@
 module.exports = {
   overrides: [
     {
-      files: ['*.ts'],
+      files: ['*.ts', '*.js'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2020,
-        sourceType: 'module',
+        sourceType: 'module'
         // project: './tsconfig.json',
       },
       plugins: ['@typescript-eslint', '@angular-eslint'],
@@ -44,13 +44,13 @@ module.exports = {
         // ORIGINAL tslint.json -> "directive-selector": [true, "attribute", "app", "camelCase"],
         '@angular-eslint/directive-selector': [
           'error',
-          { type: 'attribute', prefix: 'app', style: 'camelCase' },
+          { type: 'attribute', prefix: 'app', style: 'camelCase' }
         ],
 
         // ORIGINAL tslint.json -> "component-selector": [true, "element", "app", "kebab-case"],
         '@angular-eslint/component-selector': [
           'error',
-          { type: 'element', prefix: 'app', style: 'kebab-case' },
+          { type: 'element', prefix: 'app', style: 'kebab-case' }
         ],
 
         // ORIGINAL tslint.json -> "import-blacklist": [true, "rxjs/Rx"],
@@ -60,10 +60,10 @@ module.exports = {
             paths: [
               {
                 name: 'rxjs/Rx',
-                message: "Please import directly from 'rxjs' instead",
-              },
-            ],
-          },
+                message: "Please import directly from 'rxjs' instead"
+              }
+            ]
+          }
         ],
 
         // ORIGINAL tslint.json -> "interface-name": false,
@@ -86,9 +86,9 @@ module.exports = {
               'static-field',
               'instance-field',
               'static-method',
-              'instance-method',
-            ],
-          },
+              'instance-method'
+            ]
+          }
         ],
 
         // ORIGINAL tslint.json -> "no-consecutive-blank-lines": false,
@@ -100,8 +100,8 @@ module.exports = {
           {
             selector:
               'CallExpression[callee.object.name="console"][callee.property.name=/^(debug|info|time|timeEnd|trace)$/]',
-            message: 'Unexpected property on console object was called',
-          },
+            message: 'Unexpected property on console object was called'
+          }
         ],
 
         // ORIGINAL tslint.json -> "no-empty": false,
@@ -111,8 +111,8 @@ module.exports = {
         '@typescript-eslint/no-inferrable-types': [
           'error',
           {
-            ignoreParameters: true,
-          },
+            ignoreParameters: true
+          }
         ],
 
         // ORIGINAL tslint.json -> "no-non-null-assertion": true,
@@ -180,8 +180,8 @@ module.exports = {
         '@angular-eslint/use-lifecycle-interface': 'warn',
 
         // ORIGINAL tslint.json -> "use-pipe-transform-interface": true
-        '@angular-eslint/use-pipe-transform-interface': 'error',
-      },
+        '@angular-eslint/use-pipe-transform-interface': 'error'
+      }
     },
     {
       files: ['*.component.html'],
@@ -192,18 +192,18 @@ module.exports = {
         '@angular-eslint/template/banana-in-a-box': 'error',
 
         // ORIGINAL tslint.json -> "template-no-negated-async": true,
-        '@angular-eslint/template/no-negated-async': 'error',
-      },
+        '@angular-eslint/template/no-negated-async': 'error'
+      }
     },
     {
       files: ['*.component.ts'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2020,
-        sourceType: 'module',
+        sourceType: 'module'
       },
       plugins: ['@angular-eslint/template'],
-      processor: '@angular-eslint/template/extract-inline-html',
-    },
-  ],
+      processor: '@angular-eslint/template/extract-inline-html'
+    }
+  ]
 };
