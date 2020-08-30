@@ -14,6 +14,8 @@ console.log('hello world!');
 
 > This is a quote
 
+<!-- this is a comment, the picture below is only given as an example -->
+
 ![Example Image](/assets/undraw_sync_files_xb3r.png)
 
 **This is bold text**
