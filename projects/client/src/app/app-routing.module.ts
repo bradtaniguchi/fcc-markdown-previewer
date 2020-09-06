@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EditorComponent } from './modules/editor/editor.component';
 
 const routes: Routes = [
   {
@@ -18,12 +17,14 @@ const routes: Routes = [
   {
     path: 'editor',
     pathMatch: 'full',
-    component: EditorComponent
+    loadChildren: () =>
+      import('./modules/editor/editor.module').then((m) => m.EditorModule)
   },
   {
     path: 'editor/:id',
     pathMatch: 'full',
-    component: EditorComponent
+    loadChildren: () =>
+      import('./modules/editor/editor.module').then((m) => m.EditorModule)
   },
   {
     path: '',
