@@ -14,5 +14,10 @@ export interface AppSettings {
    * The theme class to display. Defaults to dark-theme
    */
   theme: string;
+  /**
+   * If we are to hide or show the fcc-test-suite.
+   * Defaults to false, so its shown
+   */
+  testSuiteHidden: boolean;
   // TODO: add editor settings
 }
