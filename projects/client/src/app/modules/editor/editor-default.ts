@@ -4,6 +4,8 @@ export const EDITOR_DEFAULT = `
 
 [freeCodeCamp challenge](https://www.freecodecamp.org/learn/front-end-libraries/front-end-libraries-projects/build-a-markdown-previewer)
 
+\`console.log('inline code')\`
+
 \`\`\`js
 // This is a js code block
 console.log('hello world!');
