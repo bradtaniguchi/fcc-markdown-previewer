@@ -1,3 +1,4 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,17 +6,11 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {
-  Observable,
-  ReplaySubject,
-  combineLatest,
-  BehaviorSubject
-} from 'rxjs';
-import { take, mergeMap, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, mergeMap, take } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { File } from '../../models/file';
 import { FileService } from '../../services/file.service';
-import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-files',
@@ -87,18 +82,16 @@ import { SelectionModel } from '@angular/cdk/collections';
     </a>
     <ng-template #actionTemplate>
       <span class="flex-layout-row align-center full-width">
-        <span>
+        <span class="flex-100">
           <input
             type="text"
             autocomplete="off"
             (keyup)="query$.next(queryInput.value)"
             placeholder="Search"
-            class="basic-input"
+            class="full-width basic-input"
             #queryInput
           />
         </span>
-        <!-- TODO: sort by property? -->
-        <span class="full-width"></span>
         <span>
           <button
             *ngIf="selection.hasValue()"
