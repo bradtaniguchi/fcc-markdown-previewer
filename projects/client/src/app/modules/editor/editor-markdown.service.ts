@@ -12,6 +12,11 @@ export class EditorMarkdownService {
    * Also performs sanitization.
    */
   public convert(str: string): string {
-    return DOMpurify.sanitize(marked(str));
+    return DOMpurify.sanitize(
+      marked(str, {
+        // add break line support
+        breaks: true
+      })
+    );
   }
 }
