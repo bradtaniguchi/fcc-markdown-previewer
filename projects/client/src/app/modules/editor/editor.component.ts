@@ -40,9 +40,9 @@ import { EditorMarkdownService } from './editor-markdown.service';
       </div>
     </div>
     <ng-template #actionTemplate>
-      <span class="flex-row">
-        <span>
-          <!-- TODO: Add label?? -->
+      <span class="flex-layout-row full-width">
+        <!-- TODO: Add label?? -->
+        <span class="flex-100">
           <input
             type="text"
             autocomplete="off"
@@ -50,7 +50,7 @@ import { EditorMarkdownService } from './editor-markdown.service';
             placeholder="No Name"
             [value]="name$ | async"
             (change)="name$.next(nameInput.value)"
-            class="basic-input"
+            class="full-width basic-input"
             #nameInput
           />
         </span>
