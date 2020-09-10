@@ -146,7 +146,6 @@ export class EditorComponent implements OnInit, OnDestroy {
           name: this.name$.value,
           content: this.content$.value
         })),
-        tap((val) => console.log('test with save', val)),
         mergeMap(({ id, name, content }) =>
           !!id
             ? this.fileService.update({
@@ -163,7 +162,6 @@ export class EditorComponent implements OnInit, OnDestroy {
         take(1)
       )
       .subscribe(({ id }) => {
-        console.log('test with id', { id });
         this.router.navigate(['/editor', id]);
       });
   }

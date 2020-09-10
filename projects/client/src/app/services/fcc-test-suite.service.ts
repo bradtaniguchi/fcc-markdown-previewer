@@ -28,7 +28,6 @@ export class FccTestSuiteService {
     @Inject(DOCUMENT) private document: Document,
     private appSettingsService: AppSettingsService
   ) {
-    console.log('test in fcc-test-suite', this.testSuiteWrapperEl);
     this.testSuiteHidden$ = this.appSettingsService.settings$.pipe(
       map(({ testSuiteHidden }) => testSuiteHidden)
     );
