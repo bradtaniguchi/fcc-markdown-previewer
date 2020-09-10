@@ -18,7 +18,7 @@ console.log('hello world!');
 
 <!-- this is a comment, the picture below is only given as an example -->
 
-![Example Image](/assets/undraw_sync_files_xb3r.png)
+![Example Image](/fcc-markdown-previewer/assets/undraw_sync_files_xb3r.png)
 
 **This is bold text**
 `;
