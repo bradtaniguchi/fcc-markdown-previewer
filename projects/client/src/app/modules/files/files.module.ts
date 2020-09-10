@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { FilesRoutingModule } from './files-routing.module';
 import { FilesComponent } from './files.component';
@@ -16,6 +17,7 @@ import { FilesComponent } from './files.component';
     FilesRoutingModule,
     RouterModule,
     // Angular Material
+    MatSnackBarModule,
     MatListModule,
     MatButtonModule,
     MatIconModule,

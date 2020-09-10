@@ -12,6 +12,7 @@ import { distinctUntilChanged, mergeMap, take } from 'rxjs/operators';
 import { HeaderActionsService } from '../../core/header/header-actions.service';
 import { File } from '../../models/file';
 import { FileService } from '../../services/file.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-files',
@@ -126,7 +127,8 @@ export class FilesComponent implements OnInit, OnDestroy {
   public files$!: Observable<File[]>;
   constructor(
     private headerActions: HeaderActionsService,
-    private fileService: FileService
+    private fileService: FileService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -139,13 +141,13 @@ export class FilesComponent implements OnInit, OnDestroy {
     this.fileService
       .remove(file.id)
       .pipe(take(1))
-      .subscribe(() => console.log('removed single file', { file }));
+      .subscribe(() => this.snackBar.open('Removed file', 'ok'));
   }
   removeSelected() {
     this.fileService
       .removeMultiple(this.selection.selected)
       .pipe(take(1))
-      .subscribe(() => console.log('removed selected'));
+      .subscribe(() => this.snackBar.open('Removed files', 'ok'));
   }
   private getFiles$(): Observable<File[]> {
     return combineLatest([
