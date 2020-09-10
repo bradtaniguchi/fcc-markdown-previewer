@@ -1,15 +1,8 @@
 name: deploy on tag
 on:
   push:
-    branches:
-      - master
-    tags-ignore:
-      - '*'
-  pull_request:
-    branches:
-      - master
-    tags-ignore:
-      - '*'
+    tags:
+      - "*"
 
 jobs:
   test-on-commit:
