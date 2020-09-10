@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderModule } from './core/header/header.module';
 import { SideNavModule } from './core/side-nav/side-nav.module';
-import { EditorModule } from './modules/editor/editor.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -16,9 +16,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     // Core Modules
     HeaderModule,
-    SideNavModule,
-    // App modules
-    EditorModule
+    SideNavModule
   ],
   providers: [],
   bootstrap: [AppComponent]

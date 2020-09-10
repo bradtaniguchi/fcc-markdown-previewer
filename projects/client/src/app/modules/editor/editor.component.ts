@@ -35,7 +35,7 @@ import { EditorMarkdownService } from './editor-markdown.service';
         </div>
         <div class="flex-50 max-width-50 scroll">
           <!-- output -->
-          <div #preview [innerHTML]="html$ | async"></div>
+          <div #preview [innerHTML]="html$ | async" id="preview"></div>
         </div>
       </div>
     </div>

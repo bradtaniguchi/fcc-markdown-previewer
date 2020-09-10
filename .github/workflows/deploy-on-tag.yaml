@@ -1,0 +1,36 @@
+name: deploy on tag
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  test-on-commit:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: use node 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.8
+      - name: install deps
+        run: npm ci
+      - name: lint
+        run: npm run lint
+      - name: build
+        run: npm run build -c=production
+      - name: build-stats
+        run: npm run build:stats
+      # Add e2e testing
+      - name: e2e
+        run: npm run e2e -- --headless
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: client-e2e
+          path: ./dist/cypress/client/**
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          publish_dir: ./dist/client

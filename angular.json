@@ -56,17 +56,19 @@
               "projects/client/src/assets"
             ],
             "styles": ["projects/client/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "fuse.js",
+              "shortid"
+            ]
           },
           "configurations": {
             "production": {
               "deployUrl": "fcc-markdown-previewer/",
-              "fileReplacements": [
-                {
-                  "replace": "projects/client/src/environments/environment.ts",
-                  "with": "projects/client/src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "projects/client/src/environments/environment.ts",
+                "with": "projects/client/src/environments/environment.prod.ts"
+              }],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -75,10 +77,9 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
+              "budgets": [{
+                  "type": "bundle",
+                  "maximumWarning": "750kb",
                   "maximumError": "1mb"
                 },
                 {
@@ -86,6 +87,10 @@
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
                 }
+              ],
+              "allowedCommonJsDependencies": [
+                "fuse.js",
+                "shortid"
               ]
             }
           }

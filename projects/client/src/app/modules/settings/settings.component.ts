@@ -1,12 +1,13 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  OnDestroy
+  Component,
+  OnDestroy,
+  OnInit
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { AppSettingsService } from '../../services/app-settings.service';
 import { map, take, takeUntil } from 'rxjs/operators';
+import { AppSettingsService } from '../../services/app-settings.service';
+import { FccTestSuiteService } from '../../services/fcc-test-suite.service';
 import { LocalForageService } from '../../services/local-forage.service';
 
 @Component({
@@ -61,6 +62,15 @@ import { LocalForageService } from '../../services/local-forage.service';
         </mat-form-field>
       </section>
       <section>
+        <mat-slide-toggle
+          [checked]="testSuiteHidden$ | async"
+          (change)="onTestSuiteHidden(slideToggle.checked)"
+          #slideToggle
+        >
+          Hide freeCodeCamp test suite
+        </mat-slide-toggle>
+      </section>
+      <section>
         <div class="margin flex-layout-row align-center">
           <button
             type="button"
@@ -112,17 +122,20 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ];
   public fontSize$!: Observable<string>;
   public theme$!: Observable<string>;
+  public testSuiteHidden$!: Observable<boolean>;
   private selectedFontSize!: string;
   private selectedTheme!: string;
   private takeUntil = new Subject();
   constructor(
     private appSettingsService: AppSettingsService,
-    private localForageService: LocalForageService
+    private localForageService: LocalForageService,
+    private fccTestSuiteService: FccTestSuiteService
   ) {}
 
   ngOnInit(): void {
     this.fontSize$ = this.getFontSize$();
     this.theme$ = this.getTheme$();
+    this.testSuiteHidden$ = this.getTestSuiteHidden$();
     this.fontSize$
       .pipe(takeUntil(this.takeUntil))
       .subscribe((fontSize) => (this.selectedFontSize = fontSize));
@@ -150,6 +163,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.localForageService.removeAll$.next();
     // TODO: show prompt
   }
+  onTestSuiteHidden(testSuiteHidden: boolean) {
+    this.fccTestSuiteService
+      .setTestSuiteHidden(testSuiteHidden)
+      .pipe(take(1))
+      .subscribe(() => {});
+  }
   changeFontSize(fontSize: string) {
     this.appSettingsService
       .update({
@@ -173,5 +192,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
   private getTheme$(): Observable<string> {
     return this.appSettingsService.settings$.pipe(map(({ theme }) => theme));
+  }
+
+  private getTestSuiteHidden$(): Observable<boolean> {
+    return this.fccTestSuiteService.testSuiteHidden$;
   }
 }
