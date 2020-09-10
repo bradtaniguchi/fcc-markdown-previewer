@@ -4,7 +4,8 @@ import {
   Component,
   OnInit,
   TemplateRef,
-  ViewChild
+  ViewChild,
+  OnDestroy
 } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, mergeMap, take } from 'rxjs/operators';
@@ -110,7 +111,7 @@ import { FileService } from '../../services/file.service';
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilesComponent implements OnInit {
+export class FilesComponent implements OnInit, OnDestroy {
   @ViewChild('actionTemplate') set actionTemplate(
     actionTemplate: TemplateRef<any>
   ) {
@@ -131,7 +132,9 @@ export class FilesComponent implements OnInit {
   ngOnInit(): void {
     this.files$ = this.getFiles$();
   }
-
+  ngOnDestroy() {
+    this.headerActions.clear();
+  }
   remove(file: File) {
     this.fileService
       .remove(file.id)

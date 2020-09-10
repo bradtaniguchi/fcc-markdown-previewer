@@ -135,6 +135,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.takeUntil.next();
     this.takeUntil.unsubscribe();
+    this.headerActions.clear();
   }
 
   public save() {
