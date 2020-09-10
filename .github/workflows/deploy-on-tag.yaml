@@ -2,7 +2,7 @@ name: deploy on tag
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
 jobs:
   test-on-commit:
@@ -18,7 +18,7 @@ jobs:
       - name: lint
         run: npm run lint
       - name: build
-        run: npm run build -c=production
+        run: npm run build -- -c=production
       - name: build-stats
         run: npm run build:stats
       # Add e2e testing
