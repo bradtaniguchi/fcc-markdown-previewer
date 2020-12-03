@@ -65,19 +65,21 @@
           "configurations": {
             "production": {
               "deployUrl": "fcc-markdown-previewer/",
-              "fileReplacements": [{
-                "replace": "projects/client/src/environments/environment.ts",
-                "with": "projects/client/src/environments/environment.prod.ts"
-              }],
+              "fileReplacements": [
+                {
+                  "replace": "projects/client/src/environments/environment.ts",
+                  "with": "projects/client/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "budgets": [{
+              "budgets": [
+                {
                   "type": "bundle",
                   "maximumWarning": "750kb",
                   "maximumError": "1mb"
