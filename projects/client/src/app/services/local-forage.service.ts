@@ -28,7 +28,7 @@ export class LocalForageService {
     });
   }
 
-  public get<T = any>(key: string): Promise<T> {
+  public get<T = any>(key: string): Promise<T | null> {
     return localForage.getItem(key);
   }
 
